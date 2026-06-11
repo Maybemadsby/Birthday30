@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Professor Materna's Field Journal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f2ead8;
+      --paper-dark: #e8dcc4;
+      --paper-darker: #d9c9a8;
+      --ink: #2c1f0e;
+      --ink-light: #5c4a2a;
+      --ink-faded: #8a7355;
+      --red-stamp: #8b2020;
+      --green-moss: #3a5230;
+      --green-light: #5a7248;
+      --sepia: #c4a265;
+      --sepia-dark: #9c7d45;
+      --shadow: rgba(44,31,14,0.2);
+      --field-note-bg: #1a2a1a;
+      --field-note-accent: #4a8c3f;
+      --field-note-text: #c8e6c0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Libre Baskerville', serif;
+      background: #1a1208;
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 12px 0 40px;
+    }
+
+    #app {
+      width: 100%;
+      max-width: 430px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    #header {
+      background: var(--paper);
+      border-radius: 4px 4px 0 0;
+      border-bottom: 3px double var(--sepia-dark);
+      overflow: hidden;
+      box-shadow: 0 4px 16px var(--shadow);
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+    #header-img-wrap {
+      width: 100%;
+      max-height: 160px;
+      overflow: hidden;
+      position: relative;
+    }
+    #header-img-wrap img {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .header-tap-hint {
+      position: absolute;
+      bottom: 6px;
+      right: 8px;
+      font-family: 'Caveat', cursive;
+      font-size: 0.7rem;
+      color: rgba(242,234,216,0.7);
+      pointer-events: none;
+    }
+    .header-bottom {
+      padding: 10px 14px 12px;
+    }
+    .header-title {
+      font-family: 'Special Elite', cursive;
+      font-size: 1.15rem;
+      color: var(--ink);
+      letter-spacing: 0.03em;
+    }
+    .header-subtitle {
+      font-family: 'Caveat', cursive;
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      margin-top: 1px;
+    }
+    .header-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      padding-top: 7px;
+      border-top: 1px solid var(--paper-darker);
+    }
+    .specimens-count {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.75rem;
+      color: var(--green-moss);
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 2px;
+      transition: background 0.15s;
+    }
+    .specimens-count:hover { background: var(--paper-dark); }
+    .header-buttons { display: flex; gap: 8px; }
+    .icon-btn {
+      background: none;
+      border: 1px solid var(--sepia);
+      border-radius: 3px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: var(--ink-light);
+      font-family: 'Special Elite', cursive;
+      transition: background 0.15s;
+    }
+    .icon-btn:hover { background: var(--paper-dark); }
+
+    /* ── MAIN CONTENT ── */
+    #main-content {
+      background: var(--paper);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    }
+
+    /* ── OPENING ── */
+    #opening-screen { padding: 22px 20px 26px; }
+    .opening-label {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--red-stamp);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* Polaroid */
+    .polaroid-wrap {
+      background: white;
+      padding: 8px 8px 28px;
+      box-shadow: 2px 3px 10px var(--shadow);
+      margin-bottom: 16px;
+      transform: rotate(-1.5deg);
+      max-width: 260px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .polaroid-wrap img {
+      width: 100%;
+      display: block;
+    }
+    .polaroid-caption {
+      font-family: 'Caveat', cursive;
+      font-size: 0.88rem;
+      color: #333;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    .opening-message {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.86rem;
+      color: var(--ink);
+      line-height: 1.75;
+      font-style: italic;
+      border-left: 3px solid var(--sepia);
+      padding-left: 12px;
+      margin-bottom: 18px;
+    }
+    .opening-message .signature {
+      display: block;
+      font-style: normal;
+      font-weight: 700;
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--ink-light);
+    }
+    .begin-btn {
+      width: 100%;
+      background: var(--green-moss);
+      color: var(--paper);
+      border: none;
+      padding: 13px;
+      font-family: 'Special Elite', cursive;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+    .begin-btn:hover { background: var(--green-light); }
+
+    /* ── STOPS LIST ── */
+    #stops-list { padding: 14px 14px 28px; display: none; }
+    .stops-label {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.65rem;
+      letter-spacing: 0.13em;
+      color: var(--ink-faded);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--paper-darker);
+    }
+
+    .stop-card {
+      background: var(--paper-dark);
+      border: 1px solid var(--paper-darker);
+      border-radius: 3px;
+      margin-bottom: 8px;
+      overflow: hidden;
+      box-shadow: 1px 1px 4px var(--shadow);
+    }
+    .stop-card.active { border-color: var(--sepia-dark); box-shadow: 2px 2px 10px var(--shadow); }
+    .stop-card.completed { opacity: 0.6; }
+
+    .stop-header {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      gap: 10px;
+    }
+    .stop-num {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.68rem;
+      color: var(--ink-faded);
+      min-width: 22px;
+    }
+    .stop-name {
+      flex: 1;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.82rem;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .stop-card.completed .stop-name { text-decoration: line-through; color: var(--ink-faded); }
+    .stop-status { font-size: 0.9rem; color: var(--ink-faded); min-width: 18px; text-align: center; }
+
+    .stop-body { display: none; padding: 0 12px 12px 12px; }
+    .stop-card.active .stop-body { display: block; }
+
+    .clue-box {
+      background: var(--paper);
+      border: 1px dashed var(--sepia);
+      border-radius: 2px;
+      padding: 10px 12px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.02rem;
+      color: var(--ink);
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+
+    .confirm-btn {
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      padding: 10px 14px;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border-radius: 2px;
+      width: 100%;
+      transition: background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .confirm-btn:hover { background: var(--ink-light); }
+
+    /* field note banner on completed cards */
+    .fn-banner {
+      background: var(--green-moss);
+      color: #d4edcc;
+      border-radius: 2px;
+      padding: 7px 10px;
+      margin-bottom: 8px;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      animation: pulse 2.5s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.8} }
+
+    /* ── OVERLAYS ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,7,3,0.88);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      padding: 16px;
+    }
+    .overlay-box {
+      background: var(--paper);
+      border-radius: 4px;
+      max-width: 360px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      max-height: 90vh;
+      overflow-y: auto;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    }
+    .overlay-img {
+      width: 100%;
+      max-height: 210px;
+      object-fit: cover;
+      display: block;
+      border-bottom: 2px solid var(--sepia);
+    }
+    .overlay-img-placeholder {
+      width: 100%;
+      height: 120px;
+      background: var(--paper-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Caveat', cursive;
+      color: var(--ink-faded);
+      font-size: 2rem;
+      border-bottom: 1px solid var(--sepia);
+    }
+    .overlay-body { padding: 14px 16px 18px; }
+    .overlay-label {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.62rem;
+      letter-spacing: 0.13em;
+      color: var(--red-stamp);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    /* handwriting style for sighting text */
+    .sighting-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.08rem;
+      color: var(--ink);
+      line-height: 1.6;
+      border-left: 3px solid var(--sepia);
+      padding-left: 10px;
+      margin-bottom: 12px;
+    }
+    /* standard overlay text */
+    .overlay-text {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.84rem;
+      color: var(--ink);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+    .overlay-text-italic {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.84rem;
+      color: var(--ink);
+      line-height: 1.65;
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+
+    .overlay-close {
+      width: 100%;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      padding: 10px;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border-radius: 2px;
+      margin-top: 4px;
+    }
+    .overlay-close:hover { background: var(--ink-light); }
+
+    /* NEGATIVE overlay */
+    .overlay-box.negative { border-top: 4px solid var(--red-stamp); }
+    .negative-stamp {
+      font-family: 'Special Elite', cursive;
+      font-size: 1.1rem;
+      color: var(--red-stamp);
+      border: 3px solid var(--red-stamp);
+      display: inline-block;
+      padding: 2px 12px;
+      transform: rotate(-3deg);
+      margin-bottom: 10px;
+      letter-spacing: 0.1em;
+    }
+
+    /* LOGGED overlay — minimal */
+    .logged-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.1rem;
+      color: var(--ink);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .logged-count {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.75rem;
+      color: var(--green-moss);
+      letter-spacing: 0.08em;
+    }
+
+    /* FIELD NOTE overlay — totally different */
+    .overlay-box.field-note {
+      background: var(--field-note-bg) !important;
+      border: 2px solid var(--field-note-accent);
+      background-image: none !important;
+    }
+    .fn-header {
+      background: var(--field-note-accent);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .fn-header-text {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: white;
+      text-transform: uppercase;
+    }
+    .fn-number {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--field-note-accent);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .fn-body { padding: 14px 16px 16px; }
+    .fn-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.12rem;
+      color: var(--field-note-text);
+      line-height: 1.65;
+      border-left: 2px solid var(--field-note-accent);
+      padding-left: 12px;
+      margin-bottom: 14px;
+    }
+    .fn-close {
+      width: 100%;
+      background: var(--field-note-accent);
+      color: white;
+      border: none;
+      padding: 10px;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+
+    /* ARCHIVE */
+    .archive-wrap { padding: 14px 16px 16px; max-height: 75vh; overflow-y: auto; }
+    .archive-wrap h2 {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.9rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--sepia);
+    }
+    .archive-note { margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px dashed var(--paper-darker); }
+    .archive-note:last-child { border-bottom: none; }
+    .archive-note-num {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--green-moss);
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .archive-note-text {
+      font-family: 'Caveat', cursive;
+      font-size: 0.98rem;
+      color: var(--ink);
+      line-height: 1.55;
+    }
+    .no-notes {
+      font-family: 'Caveat', cursive;
+      font-size: 0.95rem;
+      color: var(--ink-faded);
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    /* RESET */
+    .reset-body { padding: 18px 16px 16px; }
+    .reset-body p { font-family: 'Libre Baskerville', serif; font-size: 0.85rem; color: var(--ink); margin-bottom: 14px; line-height: 1.5; }
+    .reset-btns { display: flex; gap: 10px; }
+    .reset-btns button { flex:1; padding:10px; font-family:'Special Elite',cursive; font-size:0.82rem; letter-spacing:0.05em; cursor:pointer; border-radius:2px; border:none; }
+    .btn-yes { background: var(--red-stamp); color: var(--paper); }
+    .btn-no { background: var(--ink-light); color: var(--paper); }
+
+    /* FINAL REVEAL */
+    .overlay-box.reveal { border: 3px solid var(--sepia-dark); }
+    .reveal-stamp {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      color: var(--red-stamp);
+      border: 2px solid var(--red-stamp);
+      display: inline-block;
+      padding: 2px 10px;
+      transform: rotate(-2deg);
+      margin-bottom: 8px;
+    }
+    .reveal-name {
+      font-family: 'Special Elite', cursive;
+      font-size: 1.3rem;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .reveal-text {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.82rem;
+      color: var(--ink);
+      line-height: 1.65;
+      margin-bottom: 10px;
+    }
+
+    /* BIRTHDAY SCREEN */
+    .birthday-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.05rem;
+      color: var(--ink);
+      line-height: 1.7;
+      text-align: center;
+      padding: 4px 0 10px;
+    }
+    .birthday-big {
+      font-family: 'Special Elite', cursive;
+      font-size: 1.1rem;
+      color: var(--green-moss);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .anim-0 { animation: fadeInUp 0.4s ease forwards; }
+    .anim-1 { opacity:0; animation: fadeInUp 0.4s ease 0.5s forwards; }
+    .anim-2 { opacity:0; animation: fadeInUp 0.4s ease 1.0s forwards; }
+    .anim-3 { opacity:0; animation: fadeInUp 0.4s ease 1.6s forwards; }
+    .anim-4 { opacity:0; animation: fadeInUp 0.4s ease 2.2s forwards; }
+    .anim-5 { opacity:0; animation: fadeInUp 0.4s ease 2.8s forwards; }
+
+    /* BONE GAME */
+    #bone-game-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      pointer-events: none;
+      display: none;
+    }
+    #bone-game-layer.active { display: block; pointer-events: all; }
+    #bone-game-ui {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(26,18,8,0.92);
+      color: var(--paper);
+      font-family: 'Special Elite', cursive;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--sepia);
+      z-index: 1000;
+      display: none;
+    }
+    #bone-game-ui.active { display: block; }
+    .bone-item {
+      position: fixed;
+      font-size: 1.8rem;
+      cursor: pointer;
+      user-select: none;
+      animation: fall linear forwards;
+      z-index: 998;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+      transition: transform 0.1s;
+    }
+    .bone-item:active { transform: scale(1.3); }
+    @keyframes fall { from{transform:translateY(-60px)} to{transform:translateY(110vh)} }
+
+    /* EASTER EGG TOAST */
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(26,18,8,0.94);
+      color: var(--paper);
+      font-family: 'Caveat', cursive;
+      font-size: 0.95rem;
+      padding: 10px 18px;
+      border-radius: 20px;
+      border: 1px solid var(--sepia);
+      max-width: 300px;
+      text-align: center;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    #toast.show { opacity: 1; }
+
+    /* FOOTER */
+    #footer {
+      background: var(--paper-dark);
+      border-top: 2px double var(--sepia-dark);
+      border-radius: 0 0 4px 4px;
+      padding: 10px 16px;
+      text-align: center;
+      font-family: 'Caveat', cursive;
+      font-size: 0.75rem;
+      color: var(--ink-faded);
+      cursor: pointer;
+    }
+    #footer:hover { color: var(--ink-light); }
+
+    /* ALLOSAURUS fan moment */
+    .allosaurus-secret {
+      font-family: 'Caveat', cursive;
+      font-size: 0.82rem;
+      color: var(--green-moss);
+      font-style: italic;
+      text-align: center;
+      margin-top: 8px;
+      opacity: 0;
+      animation: fadeInUp 0.4s ease 0.3s forwards;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!-- HEADER -->
+  <div id="header" onclick="headerTap()">
+    <div id="header-img-wrap">
+      <img src="header.png" alt="Field Journal" onerror="this.outerHTML='<div style=\'height:100px;background:var(--paper-dark);display:flex;align-items:center;justify-content:center;font-family:Caveat,cursive;color:var(--ink-faded);font-size:0.9rem;\'>Professor Materna\'s Field Journal</div>'">
+      <div class="header-tap-hint">tap 3× for surprise</div>
+    </div>
+    <div class="header-bottom">
+      <div class="header-title">Professor Materna's Field Journal</div>
+      <div class="header-subtitle">30th Birthday Expedition — June 2026</div>
+      <div class="header-meta">
+        <div class="specimens-count" id="specimens-count" onclick="specimenTap(event)">Specimens logged: 0</div>
+        <div class="header-buttons">
+          <button class="icon-btn" onclick="openArchive(event)" title="Field Notes">📓</button>
+          <button class="icon-btn" onclick="openReset(event)" title="Reset">↺</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main-content">
+    <div id="opening-screen">
+      <div class="opening-label">Classified Transmission</div>
+
+      <div class="polaroid-wrap">
+        <img src="begin.png" alt="Field team" onerror="this.outerHTML='<div style=\'height:140px;background:#eee;display:flex;align-items:center;justify-content:center;font-family:Caveat,cursive;color:#666;font-size:0.85rem;\'>📷 begin.png</div>'">
+        <div class="polaroid-caption">Field team, ready for deployment. — June 2026</div>
+      </div>
+
+      <div class="opening-message">
+        Professor Materna,<br><br>
+        Your expertise has been requested. Specimens have been reported across the greater Bay Area — creatures unseen, unclassified, and in some cases... unexplained. Your field journal has been pre-loaded with your first coordinates.<br><br>
+        Do not dawdle. Science waits for no one.
+        <span class="signature">— The Other Professor Materna</span>
+      </div>
+      <button class="begin-btn" onclick="beginExpedition()">Begin Expedition →</button>
+    </div>
+
+    <div id="stops-list">
+      <div class="stops-label">Field Journal — Active Entries</div>
+      <div id="stops-container"></div>
+    </div>
+  </div>
+
+  <div id="footer" onclick="footerTap()">Est. June 2026 · Bay Area Paleontological Survey · 🦴</div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" class="overlay" style="display:none;">
+  <div class="overlay-box" id="overlay-box">
+    <div id="overlay-inner"></div>
+  </div>
+</div>
+
+<!-- BONE GAME -->
+<div id="bone-game-layer"></div>
+<div id="bone-game-ui"></div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const STOPS = [
+  {
+    id:0, name:"Mission Briefing: The First Coordinates",
+    clue:"Your first coordinates have been pre-loaded. Report to the battle arena at 3251 20th Ave, San Francisco. A specimen has been spotted among the warriors.",
+    confirmText:"I have arrived at the arena",
+    arrivalText:"Excellent. The arena hums with energy. Somewhere in here, a Pachycephalosaurus has been sighted — thick-skulled, battle-hardened, thrives in loud competitive environments. Keep your eyes open, Professor.",
+    image:"pachycephalosaurus.png",
+    dinoFound:true, dinoName:"Pachycephalosaurus",
+    lore:{num:1, text:"An unidentified specimen has been reported across multiple locations in the area. Accounts are inconsistent. Size: unknown. Behavior: unknown. One researcher simply wrote: 'I wasn't expecting it.' The expedition must investigate."},
+    negative:false
+  },
+  {
+    id:1, name:"Base Camp: Gear Up",
+    clue:"Return to base camp. Coordinates: Sand Hill Road. Gear up. The field journal has more coordinates waiting — but only once you're equipped.",
+    confirmText:"Base camp reached. Equipment secured.",
+    arrivalText:"Good. You're back. The lab has received new intelligence. Several specimens have been reported along a corridor heading south through Stanford University. The field journal is updating with new coordinates now...",
+    image:null,
+    dinoFound:false,
+    lore:{num:2, text:"A researcher departed to investigate the unknown specimen. Their last transmission: 'I'm going searching. Don't look for me.' We have not heard from them since. The expedition continues in their honor."},
+    negative:false
+  },
+  {
+    id:2, name:"Field Station Alpha: The Fast Mover",
+    clue:"Head toward the great university to the south. Your first stop: find the tables where you never eat but face defeat. A small but fast specimen has been reported in the area.",
+    confirmText:"Field Station Alpha — reached",
+    arrivalText:"A Compsognathus! One of the smallest known dinosaurs. Deceptively fast. Do not underestimate it. Specimen logged.",
+    image:"compsognathus.png",
+    dinoFound:true, dinoName:"Compsognathus",
+    lore:null, negative:false
+  },
+  {
+    id:3, name:"Field Station Beta: The Grazer",
+    clue:"Head toward the heart of the university. Find the golden walls. An enormous specimen has been reported grazing near the archways.",
+    confirmText:"Field Station Beta — reached",
+    arrivalText:"A Brachiosaurus. Of course. It was always going to be a Brachiosaurus here. Magnificent. Completely ignoring you. Specimen logged.",
+    image:"brachiosaurus.png",
+    dinoFound:true, dinoName:"Brachiosaurus",
+    lore:{num:3, text:"Territorial behavior confirmed. The unknown specimen appears to have claimed a specific zone and does not welcome intruders."},
+    negative:false
+  },
+  {
+    id:4, name:"Field Station Gamma: The Hidden One",
+    clue:"Continue deeper into campus. Find the building where future leaders pace and scheme. You'll find a barrage of colors, perfect for camouflage. Something has been spotted there… barely.",
+    confirmText:"Field Station Gamma — reached. Scanning carefully.",
+    arrivalText:"A Carnotaurus. Believed by researchers to have limited color-changing ability — nature's own camouflage. It was standing against that wall the entire time. It watched you look for it. Specimen logged.",
+    image:"carnotaurus.png",
+    dinoFound:true, dinoName:"Carnotaurus",
+    lore:null, negative:false
+  },
+  {
+    id:5, name:"Field Station Delta: The Little Ones",
+    clue:"Head toward the residential edge of campus. Find the playgrounds behind the graduate village. Something small has been spotted playing among the equipment. Or perhaps... several of them.",
+    confirmText:"Field Station Delta — reached",
+    arrivalText:"Oh. OH. A Protoceratops — AND a nest. Babies confirmed. The field journal did not prepare us for this level of cuteness. Specimen family logged.",
+    image:"protoceratops.png",
+    dinoFound:true, dinoName:"Protoceratops",
+    lore:null, negative:false
+  },
+  {
+    id:6, name:"Field Station Epsilon: A Promising Lead",
+    clue:"Exit campus heading west. You will find a food establishment that the Professor has long eyed with curiosity, and long been denied. A clue waits there. Do not eat anything.",
+    confirmText:"I have arrived at... oh.",
+    arrivalText:"No specimen found. Only a faint smell and a flickering drive-thru menu. The field journal has registered this location as: NEGATIVE. Science is sometimes cruel, Professor. Move on.\n\n(You were never going to eat here anyway.)",
+    image:"jackinbox.png",
+    dinoFound:false,
+    lore:null, negative:true
+  },
+  {
+    id:7, name:"Field Station Zeta: The Gentle Giant",
+    clue:"Cross the street. California Avenue awaits. Find the place where the sweet, cold drink with the little pearls at the bottom is served. A large, peaceful specimen has been reported nearby.",
+    confirmText:"Arrived. Ordering immediately.",
+    arrivalText:"A Brontosaurus. Obviously. Completely at peace. Probably has a favorite order. Specimen logged, and the Professor is encouraged to hydrate.",
+    image:"brontosaurus.png",
+    dinoFound:true, dinoName:"Brontosaurus",
+    lore:{num:4, text:"Traces of the unknown specimen have been detected in the area. Evidence suggests it sustains itself on something… sweet? Diet remains unclassified. The trail continues."},
+    negative:false
+  },
+  {
+    id:8, name:"Unexpected Discovery: The Ambush Hunter",
+    clue:"Find the green park with benches and open sky, just two blocks north. Something has been spotted there that wasn't in the original briefing. Proceed carefully.",
+    confirmText:"In the park. Scanning.",
+    arrivalText:"A Deinonychus — an ambush predator. Fast. Smart. Was absolutely watching you approach the whole time. Somehow that feels personal. Unexpected specimen logged.",
+    image:"deinonychus.png",
+    dinoFound:true, dinoName:"Deinonychus",
+    lore:null, negative:false
+  },
+  {
+    id:9, name:"The Trail Goes Cold... Or Does It?",
+    clue:"The tracks lead north. Across the street you'll find a large, strange metal figure. She's been standing there a long time. The tracks stop right at her feet. Something was here very recently.",
+    confirmText:"Standing at the sculpture. Looking around.",
+    arrivalText:"The tracks stop here. But look — they continue. Leading directly across the street. Into somewhere with lights. And sounds. And the distinct feeling that something inside really, really wants to play…",
+    image:"junglejane.png",
+    dinoFound:false,
+    lore:null, negative:false
+  },
+  {
+    id:10, name:"Field Station Eta: The Clever One",
+    clue:"The specimen is inside. It looks like it wants to play. Pick something. The field journal will know when you're done.",
+    confirmText:"Inside. Selecting a game.",
+    arrivalText:"A Velociraptor. Naturally. Highly intelligent, intensely competitive, has been here for hours. It has opinions about which game you should pick. It is correct. Specimen logged.",
+    image:"velociraptor.png",
+    dinoFound:true, dinoName:"Velociraptor",
+    lore:null, negative:false,
+    isGamelandia:true
+  },
+  {
+    id:11, name:"Field Station Theta: The Favorite",
+    clue:"Head north toward University Avenue. Find the tea shop at 436 University Ave. The field journal has registered another sighting. Something powerful. Something that has always been a personal favorite.",
+    confirmText:"At Mr. Sun Tea. Hydrating.",
+    arrivalText:"An Allosaurus. The apex predator of the Jurassic. Fearsome. Athletic. Surprisingly elegant for its size. The locals seem unbothered — which is either very brave or very unwise. Specimen logged.",
+    image:"allosaurus.png",
+    dinoFound:true, dinoName:"Allosaurus",
+    lore:{num:5, text:"A second researcher went silent attempting to observe the unknown specimen. Last known transmission: 'It just... stared at me.' Signal lost. The expedition presses on."},
+    negative:false,
+    isAllosaurus:true
+  },
+  {
+    id:12, name:"Anomaly Detected: The Boundary",
+    clue:"Head west out of Palo Alto. Where the two cities meet, find the boundary keeper — someone sits in a white tent, employed by the city, purpose unknown. The field journal has detected unusual markings nearby. This may not be a dinosaur... but something was here.",
+    confirmText:"At the boundary.",
+    arrivalText:"No specimen here. But look down. Tracks in the ground — not train tracks. Something crossed here recently, heading toward Middle Avenue. Large. Purposeful. The field journal is picking up a signal to the north.",
+    image:"tracks.png",
+    dinoFound:false,
+    lore:null, negative:false
+  },
+  {
+    id:13, name:"Field Station Iota: The King",
+    clue:"Cross into Menlo Park. Head toward Middle Avenue. Find the park with the courts. Something enormous is holding the court. It sounds fearsome. Probably.",
+    confirmText:"At the courts. Trying not to laugh.",
+    arrivalText:"A T-Rex. THE T-Rex. King of the dinosaurs. Apex predator. Terror of the Cretaceous.\n\n...Its arms aren't long enough to reach the ball with the small paddle. It knows. Everyone knows. It is doing its best. The Professor will not comment on this. Specimen logged with full respect.",
+    image:"trex.png",
+    dinoFound:true, dinoName:"T-Rex",
+    lore:{num:6, text:"The specimen has been active all day. We believe it is aware of the expedition. It has not fled. It is waiting."},
+    negative:false
+  },
+  {
+    id:14, name:"Field Station Kappa: The Water Dweller",
+    clue:"Find the place where the modern dinosaurs congregate. You'll know it by the water and the waddling. Do NOT feed them. A much larger water-dweller has also been reported in the vicinity.",
+    confirmText:"At the pond. Watching the water.",
+    arrivalText:"A Spinosaurus. Semi-aquatic. Enormous. Currently sharing the pond with several ducks who seem unbothered. The ducks may not fully understand what they're sharing the pond with. Specimen logged.",
+    image:"spinosaurus.png",
+    dinoFound:true, dinoName:"Spinosaurus",
+    lore:{num:7, text:"Footprint confirmed near still water. The size is... unexpected. This is unlike anything in the known record. Return to base. Now."},
+    negative:false
+  },
+  {
+    id:15, name:"Unexpected Discovery: The Creek Lurker",
+    clue:"The field journal pulls you north. Cross back toward Sand Hill Road — but first, find the pedestrian bridge over the creek. San Francisquito. Reports have come in that something small is clinging to the railings.",
+    confirmText:"On the bridge. Looking down.",
+    arrivalText:"A Microraptor. Tiny. Four-winged. Absolutely feral energy for its size. It was clinging to the railing watching the creek below in terror. You help it up.",
+    image:"microraptor.png",
+    dinoFound:true, dinoName:"Microraptor",
+    lore:null, negative:false
+  },
+  {
+    id:16, name:"Field Station Lambda: The Deep One",
+    clue:"Continue north on Sand Hill Road. Base camp is within reach. But the field journal has detected something in the water at home. Something that arrived while you were away. Grab your swimsuit.",
+    confirmText:"At the pool. Getting in.",
+    arrivalText:"A Mosasaurus. In the pool. Of course. Ancient marine predator. Completely at home. Specimen discovered — the hard way. Jump in, Professor. Science demands it.",
+    image:"mosasaurus.png",
+    dinoFound:true, dinoName:"Mosasaurus",
+    lore:{num:8, text:"The trail has gone quiet. All leads exhausted. Perhaps the unknown specimen was never meant to be found. Perhaps some creatures remain a mystery. The expedition may be at its end..."},
+    negative:false
+  },
+  {
+    id:17, name:"Final Entry: The Undiscovered Specimen",
+    clue:"Good work, Professor. You deserve to relax and open your new game. The field journal will register when the final specimen has been found.",
+    confirmText:"Game opened. Playing.",
+    arrivalText:"The field journal is vibrating. Something is here. It has been here all day. It was here when you left. It was here when you returned. The data is coming in now...",
+    image:null,
+    dinoFound:false,
+    lore:null, negative:false,
+    isFinal:true
+  }
+];
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let state = loadState();
+
+function loadState() {
+  try {
+    const r = localStorage.getItem('materna_v2');
+    return r ? JSON.parse(r) : fresh();
+  } catch(e) { return fresh(); }
+}
+function fresh() {
+  return { started:false, completed:{}, readNotes:{}, specimens:0, fossils:0, fossilMilestones:{} };
+}
+function save() { localStorage.setItem('materna_v2', JSON.stringify(state)); }
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function init() {
+  if (state.started) showJournal();
+  updateCount();
+}
+
+function beginExpedition() {
+  state.started = true; save();
+  showJournal();
+}
+
+function showJournal() {
+  document.getElementById('opening-screen').style.display = 'none';
+  document.getElementById('stops-list').style.display = 'block';
+  renderStops();
+}
+
+// ─────────────────────────────────────────────
+// RENDER STOPS
+// ─────────────────────────────────────────────
+function renderStops() {
+  const container = document.getElementById('stops-container');
+  container.innerHTML = '';
+
+  // find first uncompleted
+  let activeIdx = -1;
+  for (let i = 0; i < STOPS.length; i++) {
+    if (!state.completed[i]) { activeIdx = i; break; }
+  }
+
+  // Only show completed stops + the current active stop
+  for (let i = 0; i < STOPS.length; i++) {
+    const isCompleted = !!state.completed[i];
+    const isActive = i === activeIdx;
+    // Skip if locked (not completed, not active)
+    if (!isCompleted && !isActive) continue;
+
+    const stop = STOPS[i];
+    const card = document.createElement('div');
+    card.className = `stop-card ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`;
+    card.id = `stop-${i}`;
+
+    const statusIcon = isCompleted ? '✓' : '▶';
+
+    card.innerHTML = `
+      <div class="stop-header">
+        <span class="stop-num">${String(i+1).padStart(2,'0')}</span>
+        <span class="stop-name">${stop.name}</span>
+        <span class="stop-status">${statusIcon}</span>
+      </div>
+      <div class="stop-body" id="body-${i}">
+        ${isCompleted ? renderCompletedBody(stop, i) : renderActiveBody(stop, i)}
+      </div>
+    `;
+    container.appendChild(card);
+  }
+}
+
+function renderCompletedBody(stop, i) {
+  let loreBanner = '';
+  if (stop.lore && !state.readNotes[stop.lore.num]) {
+    loreBanner = `<div class="fn-banner" onclick="showFieldNote(${stop.lore.num})">📓 New Field Note Discovered — tap to read</div>`;
+  }
+  return `${loreBanner}<div style="font-family:'Caveat',cursive;font-size:0.88rem;color:var(--ink-faded);padding:2px 0;">Entry complete.</div>`;
+}
+
+function renderActiveBody(stop, i) {
+  return `
+    <div class="clue-box">${stop.clue}</div>
+    <button class="confirm-btn" id="cbtn-${i}" onclick="confirmArrival(${i})"
+      ${stop.id === 6 ? `oncontextmenu="jackLongPress(event)" ontouchstart="jackTouchStart()" ontouchend="jackTouchEnd()"` : ''}
+    >${stop.confirmText}</button>
+  `;
+}
+
+// ─────────────────────────────────────────────
+// ARRIVAL + COMPLETION
+// ─────────────────────────────────────────────
+function confirmArrival(i) {
+  const stop = STOPS[i];
+  const box = document.getElementById('overlay-box');
+  box.className = `overlay-box ${stop.negative ? 'negative' : ''}`;
+
+  let imgHtml = stop.image
+    ? `<img class="overlay-img" src="${stop.image}" alt="${stop.dinoName||''}" onerror="this.outerHTML='<div class=\'overlay-img-placeholder\'>🦕</div>'">`
+    : '';
+
+  const lines = stop.arrivalText.replace(/\n/g, '<br>');
+
+  if (stop.negative) {
+    document.getElementById('overlay-inner').innerHTML = `
+      ${imgHtml}
+      <div class="overlay-body">
+        <div class="negative-stamp">— NEGATIVE —</div>
+        <div class="sighting-text">${lines}</div>
+        <button class="overlay-close" onclick="completeStop(${i})">Noted. Moving on. →</button>
+      </div>`;
+  } else {
+    document.getElementById('overlay-inner').innerHTML = `
+      ${imgHtml}
+      <div class="overlay-body">
+        <div class="overlay-label">Specimen Report</div>
+        <div class="sighting-text">${lines}</div>
+        <button class="overlay-close" onclick="completeStop(${i})">Log entry & continue →</button>
+      </div>`;
+  }
+  showOverlay();
+}
+
+function completeStop(i) {
+  const stop = STOPS[i];
+  state.completed[i] = true;
+  if (stop.dinoFound) state.specimens = (state.specimens||0) + 1;
+  save();
+  closeOverlay();
+
+  if (stop.isFinal) {
+    renderStops(); updateCount();
+    setTimeout(showFinalReveal, 400);
+    return;
+  }
+
+  // Show logged popup
+  showLoggedPopup(stop, i);
+}
+
+function showLoggedPopup(stop, i) {
+  const box = document.getElementById('overlay-box');
+  box.className = 'overlay-box';
+
+  const allosaurusSecret = stop.isAllosaurus
+    ? `<div class="allosaurus-secret">[Unofficial field note: this one is his favorite. The Professor already knew.]</div>` : '';
+
+  document.getElementById('overlay-inner').innerHTML = `
+    <div class="overlay-body">
+      <div class="overlay-label">Entry Logged</div>
+      <div class="logged-text">${stop.dinoFound ? stop.dinoName + ' — logged.' : 'Location noted.'}</div>
+      <div class="logged-count">Specimens recorded: ${state.specimens}</div>
+      ${allosaurusSecret}
+      <button class="overlay-close" style="margin-top:14px;" onclick="afterLog(${i})">Continue expedition →</button>
+    </div>`;
+  showOverlay();
+}
+
+function afterLog(i) {
+  closeOverlay();
+  renderStops(); updateCount();
+  const stop = STOPS[i];
+  if (stop.lore && !state.readNotes[stop.lore.num]) {
+    setTimeout(() => showFieldNote(stop.lore.num), 350);
+  }
+}
+
+// ─────────────────────────────────────────────
+// FIELD NOTES
+// ─────────────────────────────────────────────
+function showFieldNote(num) {
+  const stop = STOPS.find(s => s.lore && s.lore.num === num);
+  if (!stop) return;
+  state.readNotes[num] = true; save();
+
+  const box = document.getElementById('overlay-box');
+  box.className = 'overlay-box field-note';
+
+  document.getElementById('overlay-inner').innerHTML = `
+    <div class="fn-header">
+      <span>📓</span>
+      <span class="fn-header-text">Classified Field Note — Discovered</span>
+    </div>
+    <div class="fn-body">
+      <div class="fn-number">Field Note #${num}</div>
+      <div class="fn-text">${stop.lore.text}</div>
+      <button class="fn-close" onclick="closeFieldNote(${num})">Close field note</button>
+    </div>`;
+  showOverlay();
+}
+
+function closeFieldNote(num) {
+  closeOverlay();
+  renderStops();
+}
+
+function openArchive(e) {
+  e.stopPropagation();
+  const discovered = [];
+  for (let i = 0; i < STOPS.length; i++) {
+    if (state.completed[i] && STOPS[i].lore) discovered.push(STOPS[i].lore);
+  }
+  discovered.sort((a,b) => a.num - b.num);
+
+  const box = document.getElementById('overlay-box');
+  box.className = 'overlay-box';
+
+  let html = discovered.length === 0
+    ? '<div class="no-notes">No field notes discovered yet.</div>'
+    : discovered.map(n => `<div class="archive-note"><div class="archive-note-num">Field Note #${n.num}</div><div class="archive-note-text">${n.text}</div></div>`).join('');
+
+  document.getElementById('overlay-inner').innerHTML = `
+    <div class="archive-wrap">
+      <h2>📓 Field Notes Archive</h2>
+      ${html}
+      <button class="overlay-close" onclick="closeOverlay()">Close archive</button>
+    </div>`;
+  showOverlay();
+}
+
+// ─────────────────────────────────────────────
+// FINAL REVEAL
+// ─────────────────────────────────────────────
+function showFinalReveal() {
+  const box = document.getElementById('overlay-box');
+  box.className = 'overlay-box reveal';
+
+  document.getElementById('overlay-inner').innerHTML = `
+    <img class="overlay-img" src="bishu.png" alt="Bishusaurus Domesticus"
+      onerror="this.outerHTML='<div class=\'overlay-img-placeholder\'>🐱</div>'">
+    <div class="overlay-body">
+      <div class="anim-0"><div class="reveal-stamp">SPECIMEN IDENTIFIED</div></div>
+      <div class="reveal-name anim-1">Bishusaurus Domesticus</div>
+      <div class="reveal-text anim-2">
+        Previously undocumented. Believed extinct. Actually just living on Sand Hill Road.<br><br>
+        <em>Characteristics:</em> unblinking eye contact, extreme territorial behavior, fiercely independent, known to stare down researchers without explanation.<br><br>
+        Status: not extinct. Very much present. Possibly judging you right now.
+      </div>
+      <button class="overlay-close anim-3" onclick="showBirthdayScreen()">Continue →</button>
+    </div>`;
+  showOverlay();
+}
+
+function showBirthdayScreen() {
+  const box = document.getElementById('overlay-box');
+  box.className = 'overlay-box';
+
+  document.getElementById('overlay-inner').innerHTML = `
+    <img class="overlay-img" src="birthday.png" alt="Happy Birthday"
+      onerror="this.outerHTML='<div class=\'overlay-img-placeholder\' style=\'font-size:2.5rem;\'>🦕🎂🦖</div>'">
+    <div class="overlay-body">
+      <div class="anim-0 birthday-text">
+        Every expedition needs a seasoned Professor.<br><br>
+        The field may be ancient, Professor, but you most certainly are not.<br><br>
+        May the best adventures be yet to come.
+      </div>
+      <div class="birthday-big anim-1">🎂 Happy 30th, Professor Materna.</div>
+      <button class="overlay-close anim-2" style="margin-top:16px;" onclick="closeOverlay()">Close journal</button>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────
+// RESET
+// ─────────────────────────────────────────────
+function openReset(e) {
+  e.stopPropagation();
+  const box = document.getElementById('overlay-box');
+  box.className = 'overlay-box';
+  document.getElementById('overlay-inner').innerHTML = `
+    <div class="reset-body">
+      <div class="overlay-label">Reset Expedition</div>
+      <p>Refresh all progress? This will clear all completed stops and field notes.</p>
+      <div class="reset-btns">
+        <button class="btn-yes" onclick="doReset()">Yes, reset</button>
+        <button class="btn-no" onclick="resetNo()">No, go back</button>
+      </div>
+    </div>`;
+  showOverlay();
+}
+
+function doReset() {
+  state = fresh(); save();
+  closeOverlay();
+  document.getElementById('opening-screen').style.display = 'block';
+  document.getElementById('stops-list').style.display = 'none';
+  updateCount();
+}
+
+function resetNo() {
+  closeOverlay();
+  showToast("Wise choice. The expedition continues. The fossils are safe.");
+}
+
+// ─────────────────────────────────────────────
+// OVERLAY HELPERS
+// ─────────────────────────────────────────────
+function showOverlay() { document.getElementById('overlay').style.display = 'flex'; }
+function closeOverlay() { document.getElementById('overlay').style.display = 'none'; }
+
+// ─────────────────────────────────────────────
+// UPDATE COUNT
+// ─────────────────────────────────────────────
+function updateCount() {
+  document.getElementById('specimens-count').textContent = `Specimens logged: ${state.specimens||0}`;
+}
+
+// ─────────────────────────────────────────────
+// EASTER EGGS
+// ─────────────────────────────────────────────
+
+// --- Header tap x3 → bone game ---
+let headerTaps = 0, headerTimer = null;
+function headerTap() {
+  headerTaps++;
+  if (headerTimer) clearTimeout(headerTimer);
+  headerTimer = setTimeout(() => { headerTaps = 0; }, 800);
+  if (headerTaps >= 3) {
+    headerTaps = 0;
+    startBoneGame();
+  }
+}
+
+// --- Header message tap (separate: tapping header title area) ---
+// already handled by headerTap — bone game IS the header easter egg
+
+// --- Specimen count tap x5 ---
+let specTaps = 0, specTimer = null;
+function specimenTap(e) {
+  e.stopPropagation();
+  specTaps++;
+  if (specTimer) clearTimeout(specTimer);
+  specTimer = setTimeout(() => { specTaps = 0; }, 1200);
+  if (specTaps >= 5) {
+    specTaps = 0;
+    showToast("The lab has been informed of your dedication. Professor Materna receives a gold star. Do not tell the other professors.");
+  }
+}
+
+// --- Footer tap → bone game via fossil ---
+function footerTap() {
+  showToast("You found a fossil fragment. It has been added to your collection.");
+  addFossil(1);
+}
+
+// --- Jack in the Box long press ---
+let jackTimer = null;
+function jackTouchStart() {
+  jackTimer = setTimeout(() => {
+    showToast("...you considered it. The field journal has noted this. Science is watching.");
+  }, 1500);
+}
+function jackTouchEnd() { if (jackTimer) clearTimeout(jackTimer); }
+function jackLongPress(e) {
+  e.preventDefault();
+  showToast("...you considered it. The field journal has noted this. Science is watching.");
+}
+
+// ─────────────────────────────────────────────
+// BONE GAME
+// ─────────────────────────────────────────────
+let boneGameActive = false;
+let bonesCaught = 0;
+let bonesTotal = 0;
+let boneTimers = [];
+let boneGameTimer = null;
+
+function startBoneGame() {
+  if (boneGameActive) return;
+  boneGameActive = true;
+  bonesCaught = 0;
+  bonesTotal = 7;
+
+  const layer = document.getElementById('bone-game-layer');
+  const ui = document.getElementById('bone-game-ui');
+  layer.innerHTML = '';
+  layer.classList.add('active');
+  ui.classList.add('active');
+  updateBoneUI();
+
+  // Spawn bones
+  for (let i = 0; i < bonesTotal; i++) {
+    const delay = i * 600 + Math.random() * 300;
+    const t = setTimeout(() => spawnBone(layer), delay);
+    boneTimers.push(t);
+  }
+
+  // End game after all bones could have fallen
+  boneGameTimer = setTimeout(endBoneGame, bonesTotal * 700 + 3000);
+}
+
+function spawnBone(layer) {
+  const bone = document.createElement('div');
+  bone.className = 'bone-item';
+  bone.textContent = '🦴';
+  const left = 10 + Math.random() * 75;
+  const duration = 3.5 + Math.random() * 2.5;
+  bone.style.left = left + 'vw';
+  bone.style.top = '-60px';
+  bone.style.animationDuration = duration + 's';
+  bone.onclick = (e) => {
+    e.stopPropagation();
+    bone.remove();
+    bonesCaught++;
+    updateBoneUI();
+    checkFossilMilestone();
+  };
+  layer.appendChild(bone);
+  setTimeout(() => { if (bone.parentNode) bone.remove(); }, duration * 1000 + 100);
+}
+
+function updateBoneUI() {
+  document.getElementById('bone-game-ui').textContent = `Fossil Fragments: ${state.fossils + bonesCaught}  |  Catch the bones!`;
+}
+
+function endBoneGame() {
+  boneTimers.forEach(clearTimeout);
+  boneTimers = [];
+  boneGameActive = false;
+  const layer = document.getElementById('bone-game-layer');
+  const ui = document.getElementById('bone-game-ui');
+  layer.innerHTML = '';
+  layer.classList.remove('active');
+  ui.classList.remove('active');
+  addFossil(bonesCaught);
+}
+
+function addFossil(n) {
+  state.fossils = (state.fossils||0) + n;
+  save();
+  checkFossilMilestone();
+}
+
+function checkFossilMilestone() {
+  const f = state.fossils;
+  const milestones = {
+    3: "Fragment cache unlocked. The lab is intrigued.",
+    7: "Significant fossil cache confirmed. Professor Materna has the instincts of a true paleontologist.",
+    12: "FULL SKELETON ASSEMBLED. The museum has been notified. A wing will be named after you. 🦕",
+    20: "The lab is out of shelf space. Please stop finding bones. This is not a complaint. This is a crisis."
+  };
+  for (const [k, msg] of Object.entries(milestones)) {
+    const key = 'fm_' + k;
+    if (f >= parseInt(k) && !state.fossilMilestones[key]) {
+      state.fossilMilestones[key] = true;
+      save();
+      setTimeout(() => showToast(msg), 300);
+      break;
+    }
+  }
+}
+
+// ─────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ─────────────────────────────────────────────
+// START
+// ─────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
