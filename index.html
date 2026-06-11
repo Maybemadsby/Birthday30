@@ -55,13 +55,12 @@
     }
     #header-img-wrap {
       width: 100%;
-      max-height: 160px;
       overflow: hidden;
       position: relative;
     }
     #header-img-wrap img {
       width: 100%;
-      object-fit: cover;
+      height: auto;
       display: block;
     }
     .header-tap-hint {
@@ -313,10 +312,12 @@
     }
     .overlay-img {
       width: 100%;
-      max-height: 210px;
-      object-fit: cover;
+      height: auto;
+      max-height: 55vh;
+      object-fit: contain;
       display: block;
       border-bottom: 2px solid var(--sepia);
+      background: var(--paper-dark);
     }
     .overlay-img-placeholder {
       width: 100%;
@@ -834,7 +835,7 @@ const STOPS = [
     clue:"Head west out of Palo Alto. Where the two cities meet, find the boundary keeper — someone sits in a white tent, employed by the city, purpose unknown. The field journal has detected unusual markings nearby. This may not be a dinosaur... but something was here.",
     confirmText:"At the boundary.",
     arrivalText:"No specimen here. But look down. Tracks in the ground — not train tracks. Something crossed here recently, heading toward Middle Avenue. Large. Purposeful. The field journal is picking up a signal to the north.",
-    image:"tracks.png",
+    image:"traintracks.png",
     dinoFound:false,
     lore:null, negative:false
   },
@@ -1037,15 +1038,11 @@ function showLoggedPopup(stop, i) {
   const box = document.getElementById('overlay-box');
   box.className = 'overlay-box';
 
-  const allosaurusSecret = stop.isAllosaurus
-    ? `<div class="allosaurus-secret">[Unofficial field note: this one is his favorite. The Professor already knew.]</div>` : '';
-
   document.getElementById('overlay-inner').innerHTML = `
     <div class="overlay-body">
       <div class="overlay-label">Entry Logged</div>
       <div class="logged-text">${stop.dinoFound ? stop.dinoName + ' — logged.' : 'Location noted.'}</div>
       <div class="logged-count">Specimens recorded: ${state.specimens}</div>
-      ${allosaurusSecret}
       <button class="overlay-close" style="margin-top:14px;" onclick="afterLog(${i})">Continue expedition →</button>
     </div>`;
   showOverlay();
