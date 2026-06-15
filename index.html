@@ -644,6 +644,153 @@
       opacity: 0;
       animation: fadeInUp 0.4s ease 0.3s forwards;
     }
+
+    /* ── GUESSING GAME ── */
+    .guess-section {
+      margin-top: 14px;
+      border-top: 1px dashed var(--sepia);
+      padding-top: 12px;
+    }
+    .guess-label {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.65rem;
+      letter-spacing: 0.13em;
+      color: var(--ink-faded);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .guess-title {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.88rem;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+    .hint-box {
+      background: var(--paper);
+      border: 1px solid var(--sepia);
+      border-radius: 2px;
+      padding: 9px 11px;
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--ink);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .hint-box.hint-3 {
+      border-color: var(--green-moss);
+      color: var(--green-moss);
+    }
+    .guess-input-wrap {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .guess-input {
+      flex: 1;
+      border: 1px solid var(--sepia-dark);
+      background: var(--paper);
+      padding: 8px 10px;
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      color: var(--ink);
+      border-radius: 2px;
+      outline: none;
+    }
+    .guess-input:focus { border-color: var(--green-moss); }
+    .guess-submit {
+      background: var(--green-moss);
+      color: var(--paper);
+      border: none;
+      padding: 8px 12px;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .guess-submit:hover { background: var(--green-light); }
+    .guess-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .hint-btn {
+      flex: 1;
+      background: none;
+      border: 1px solid var(--sepia);
+      color: var(--ink-light);
+      padding: 7px;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .hint-btn:hover { background: var(--paper-dark); }
+    .hint-btn:disabled { opacity: 0.35; cursor: default; }
+    .skip-btn {
+      flex: 1;
+      background: none;
+      border: 1px solid var(--paper-darker);
+      color: var(--ink-faded);
+      padding: 7px;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.72rem;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      border-radius: 2px;
+    }
+    .skip-btn:hover { background: var(--paper-dark); }
+    .guess-remaining {
+      font-family: 'Caveat', cursive;
+      font-size: 0.85rem;
+      color: var(--ink-faded);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .guess-wrong {
+      font-family: 'Caveat', cursive;
+      font-size: 0.9rem;
+      color: var(--red-stamp);
+      margin-bottom: 6px;
+      animation: fadeInUp 0.3s ease;
+    }
+    .guess-exhausted {
+      font-family: 'Caveat', cursive;
+      font-size: 0.95rem;
+      color: var(--ink-faded);
+      font-style: italic;
+      text-align: center;
+      padding: 6px 0;
+      border-top: 1px dashed var(--paper-darker);
+      margin-top: 4px;
+    }
+    /* bonus popup */
+    .bonus-img {
+      width: 100%;
+      height: auto;
+      max-height: 55vh;
+      object-fit: contain;
+      display: block;
+      border-bottom: 2px solid var(--sepia);
+      background: var(--paper-dark);
+    }
+    .bonus-label {
+      font-family: 'Special Elite', cursive;
+      font-size: 0.62rem;
+      letter-spacing: 0.13em;
+      color: var(--green-moss);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .bonus-text {
+      font-family: 'Caveat', cursive;
+      font-size: 1.05rem;
+      color: var(--ink);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
   </style>
 </head>
 <body>
@@ -719,67 +866,130 @@ const STOPS = [
     id:0, name:"Mission Briefing: The First Coordinates",
     clue:"Your first coordinates have been pre-loaded. Report to the battle arena at 3251 20th Ave, San Francisco. A specimen has been spotted among the warriors.",
     confirmText:"I have arrived at the arena",
-    arrivalText:"Excellent. The arena hums with energy. Somewhere in here, a Pachycephalosaurus has been sighted — thick-skulled, battle-hardened, thrives in loud competitive environments. Keep your eyes open, Professor.",
+    arrivalText:"Excellent. The arena hums with energy. Somewhere in here, a Pachycephalosaurus has been sighted - thick-skulled, battle-hardened, thrives in loud competitive environments. Keep your eyes open, Professor.",
     image:"pachycephalosaurus.png",
     dinoFound:true, dinoName:"Pachycephalosaurus",
     lore:{num:1, text:"An unidentified specimen has been reported across multiple locations in the area. Accounts are inconsistent. Size: unknown. Behavior: unknown. One researcher simply wrote: 'I wasn't expecting it.' The expedition must investigate."},
-    negative:false
+    negative:false,
+    nextHints:{
+      answer:"pachycephalosaurus",
+      hints:[
+        "This creature's most distinctive feature is on top of its head - a thick dome of solid bone, up to 10 inches thick.",
+        "It walked on two legs and was about the size of a large sheep. Herbivore, but don't let that fool you.",
+        "...Surely a Professor of your caliber recognizes a dinosaur named literally after having a thick skull."
+      ],
+      bonusImage:"bonus_heterodontosaurus.png",
+      bonusDino:"Heterodontosaurus"
+    }
   },
   {
     id:1, name:"Base Camp: Gear Up",
-    clue:"Return to base camp. Coordinates: Sand Hill Road. Gear up. The field journal has more coordinates waiting — but only once you're equipped.",
+    clue:"Return to base camp. Coordinates: Sand Hill Road. Gear up. The field journal has more coordinates waiting - but only once you're equipped.",
     confirmText:"Base camp reached. Equipment secured.",
     arrivalText:"Good. You're back. The lab has received new intelligence. Several specimens have been reported along a corridor heading south through Stanford University. The field journal is updating with new coordinates now...",
     image:null,
     dinoFound:false,
     lore:{num:2, text:"A researcher departed to investigate the unknown specimen. Their last transmission: 'I'm going searching. Don't look for me.' We have not heard from them since. The expedition continues in their honor."},
-    negative:false
+    negative:false,
+    nextHints:{
+      answer:"compsognathus",
+      hints:[
+        "One of the smallest dinosaurs ever discovered, about the size of a turkey.",
+        "It ran on two legs and was one of the fastest dinosaurs for its size, built like a sprinter.",
+        "...One of the most complete dinosaur skeletons ever found, its name means 'elegant jaw.' We believe in you, Professor!"
+      ],
+      bonusImage:"bonus_lesothosaurus.png",
+      bonusDino:"Lesothosaurus"
+    }
   },
   {
     id:2, name:"Field Station Alpha: The Fast Mover",
     clue:"Head toward the great university to the south. Your first stop: find the tables where you never eat but face defeat. A small but fast specimen has been reported in the area.",
-    confirmText:"Field Station Alpha — reached",
+    confirmText:"Field Station Alpha - reached",
     arrivalText:"A Compsognathus! One of the smallest known dinosaurs. Deceptively fast. Do not underestimate it. Specimen logged.",
     image:"compsognathus.png",
     dinoFound:true, dinoName:"Compsognathus",
-    lore:null, negative:false
+    lore:null, negative:false,
+    nextHints:{
+      answer:"brachiosaurus",
+      hints:[
+        "This enormous dinosaur is known for its exceptionally long neck, which it used to reach vegetation high in the treetops.",
+        "It walked on four legs and is believed to have weighed up to 60 tons, making it one of the heaviest animals ever to walk the earth.",
+        "...Its name means 'arm lizard' because its front legs were longer than its back legs, which was unusual. The Professor can surely place it now."
+      ],
+      bonusImage:"bonus_lesothosaurus.png",
+      bonusDino:"Lesothosaurus"
+    }
   },
   {
     id:3, name:"Field Station Beta: The Grazer",
     clue:"Head toward the heart of the university. Find the golden walls. An enormous specimen has been reported grazing near the archways.",
-    confirmText:"Field Station Beta — reached",
+    confirmText:"Field Station Beta - reached",
     arrivalText:"A Brachiosaurus. Of course. It was always going to be a Brachiosaurus here. Magnificent. Completely ignoring you. Specimen logged.",
     image:"brachiosaurus.png",
     dinoFound:true, dinoName:"Brachiosaurus",
     lore:{num:3, text:"Territorial behavior confirmed. The unknown specimen appears to have claimed a specific zone and does not welcome intruders."},
-    negative:false
+    negative:false,
+    nextHints:{
+      answer:"carnotaurus",
+      hints:[
+        "This carnivore had two distinctive horns above its eyes, the only large meat-eater known to have them.",
+        "It had unusually small arms, even shorter relative to its body than T-Rex, and scientists believe it may have had some ability to change skin color.",
+        "...Come now, Professor. Horns above the eyes, possible skin-color shifting, name meaning 'meat-eating bull.' The lab expects better."
+      ],
+      bonusImage:"bonus_epidexipteryx.png",
+      bonusDino:"Epidexipteryx"
+    }
   },
   {
     id:4, name:"Field Station Gamma: The Hidden One",
-    clue:"Continue deeper into campus. Find the building where future leaders pace and scheme. You'll find a barrage of colors, perfect for camouflage. Something has been spotted there… barely.",
-    confirmText:"Field Station Gamma — reached. Scanning carefully.",
-    arrivalText:"A Carnotaurus. Believed by researchers to have limited color-changing ability — nature's own camouflage. It was standing against that wall the entire time. It watched you look for it. Specimen logged.",
+    clue:"Continue deeper into campus. Find the building where future leaders pace and scheme. You'll find a barrage of colors, perfect for camouflage. Something has been spotted there barely.",
+    confirmText:"Field Station Gamma - reached. Scanning carefully.",
+    arrivalText:"A Carnotaurus. Believed by researchers to have limited color-changing ability - nature's own camouflage. It was standing against that wall the entire time. It watched you look for it. Specimen logged.",
     image:"carnotaurus.png",
     dinoFound:true, dinoName:"Carnotaurus",
-    lore:null, negative:false
+    lore:null, negative:false,
+    nextHints:{
+      answer:"protoceratops",
+      hints:[
+        "This dinosaur is known for its distinctive bony frill at the back of its skull and a sharp beak at the front.",
+        "It was a small four-legged herbivore, roughly the size of a sheep, and lived in the Gobi Desert during the Late Cretaceous.",
+        "...Fossil evidence has revealed entire nesting sites for this dinosaur, including eggs and babies. The Professor is getting warmer."
+      ],
+      bonusImage:"bonus_epidexipteryx.png",
+      bonusDino:"Epidexipteryx"
+    }
   },
   {
     id:5, name:"Field Station Delta: The Little Ones",
     clue:"Head toward the residential edge of campus. Find the playgrounds behind the graduate village. Something small has been spotted playing among the equipment. Or perhaps... several of them.",
-    confirmText:"Field Station Delta — reached",
-    arrivalText:"Oh. OH. A Protoceratops — AND a nest. Babies confirmed. The field journal did not prepare us for this level of cuteness. Specimen family logged.",
+    confirmText:"Field Station Delta - reached",
+    arrivalText:"Oh. OH. A Protoceratops - AND a nest. Babies confirmed. The field journal did not prepare us for this level of cuteness. Specimen family logged.",
     image:"protoceratops.png",
     dinoFound:true, dinoName:"Protoceratops",
-    lore:null, negative:false
+    lore:null, negative:false,
+    nextHints:null
   },
   {
     id:6, name:"Field Station Epsilon: A Promising Lead",
     clue:"Exit campus heading west. You will find a food establishment that the Professor has long eyed with curiosity, and long been denied. A clue waits there. Do not eat anything.",
     confirmText:"I have arrived at... oh.",
-    arrivalText:"No specimen found. Only a faint smell and a flickering drive-thru menu. The field journal has registered this location as: NEGATIVE. Science is sometimes cruel, Professor. Move on.\n\n(You were never going to eat here anyway.)",
+    arrivalText:"No specimen found. Only a faint smell and a flickering drive-thru menu. The field journal has registered this location as: NEGATIVE. Science is sometimes cruel, Professor. Move on.
+
+(You were never going to eat here anyway.)",
     image:"jackinbox.png",
     dinoFound:false,
-    lore:null, negative:true
+    lore:null, negative:true,
+    nextHints:{
+      answer:"brontosaurus",
+      hints:[
+        "For a long time, scientists debated whether this dinosaur even existed as its own species, or was just a misidentified relative.",
+        "One of the largest animals to ever walk the earth, with a long neck, long tail, and four legs. Unhurried about everything.",
+        "...The thunder lizard, reclassified as its own genus in 2015 after a century of debate. You've got this, Professor."
+      ],
+      bonusImage:"bonus_minmi.png",
+      bonusDino:"Minmi"
+    }
   },
   {
     id:7, name:"Field Station Zeta: The Gentle Giant",
@@ -788,26 +998,38 @@ const STOPS = [
     arrivalText:"A Brontosaurus. Obviously. Completely at peace. Probably has a favorite order. Specimen logged, and the Professor is encouraged to hydrate.",
     image:"brontosaurus.png",
     dinoFound:true, dinoName:"Brontosaurus",
-    lore:{num:4, text:"Traces of the unknown specimen have been detected in the area. Evidence suggests it sustains itself on something… sweet? Diet remains unclassified. The trail continues."},
-    negative:false
+    lore:{num:4, text:"Traces of the unknown specimen have been detected in the area. Evidence suggests it sustains itself on something sweet? Diet remains unclassified. The trail continues."},
+    negative:false,
+    nextHints:null
   },
   {
     id:8, name:"Unexpected Discovery: The Ambush Hunter",
     clue:"Find the green park with benches and open sky, just two blocks north. Something has been spotted there that wasn't in the original briefing. Proceed carefully.",
     confirmText:"In the park. Scanning.",
-    arrivalText:"A Deinonychus — an ambush predator. Fast. Smart. Was absolutely watching you approach the whole time. Somehow that feels personal. Unexpected specimen logged.",
+    arrivalText:"A Deinonychus - an ambush predator. Fast. Smart. Was absolutely watching you approach the whole time. Somehow that feels personal. Unexpected specimen logged.",
     image:"deinonychus.png",
     dinoFound:true, dinoName:"Deinonychus",
-    lore:null, negative:false
+    lore:null, negative:false,
+    nextHints:null
   },
   {
     id:9, name:"The Trail Goes Cold... Or Does It?",
     clue:"The tracks lead north. Across the street you'll find a large, strange metal figure. She's been standing there a long time. The tracks stop right at her feet. Something was here very recently.",
     confirmText:"Standing at the sculpture. Looking around.",
-    arrivalText:"The tracks stop here. But look — they continue. Leading directly across the street. Into somewhere with lights. And sounds. And the distinct feeling that something inside really, really wants to play…",
+    arrivalText:"The tracks stop here. But look - they continue. Leading directly across the street. Into somewhere with lights. And sounds. And the distinct feeling that something inside really, really wants to play...",
     image:"junglejane.png",
     dinoFound:false,
-    lore:null, negative:false
+    lore:null, negative:false,
+    nextHints:{
+      answer:"velociraptor",
+      hints:[
+        "Despite what movies suggest, this dinosaur was actually about the size of a turkey and covered in feathers.",
+        "An extremely intelligent pack hunter with a distinctive curved claw on each foot used to pin prey.",
+        "...This dinosaur's name means 'swift thief' and it was native to Central and East Asia. The field journal believes the Professor is simply building suspense."
+      ],
+      bonusImage:"bonus_scipionyx.png",
+      bonusDino:"Scipionyx"
+    }
   },
   {
     id:10, name:"Field Station Eta: The Clever One",
@@ -817,37 +1039,68 @@ const STOPS = [
     image:"velociraptor.png",
     dinoFound:true, dinoName:"Velociraptor",
     lore:null, negative:false,
-    isGamelandia:true
+    nextHints:{
+      answer:"allosaurus",
+      hints:[
+        "The apex predator of the Late Jurassic, reigning long before T-Rex existed.",
+        "It had large, powerful arms with three-clawed hands, unlike certain other predators we have met today.",
+        "...The lion of the Jurassic, with three-clawed hands and a habit of taking down prey much larger than itself. We suspect the Professor knows this one quite well."
+      ],
+      bonusImage:"bonus_fruitadens.png",
+      bonusDino:"Fruitadens"
+    }
   },
   {
     id:11, name:"Field Station Theta: The Favorite",
     clue:"Head north toward University Avenue. Find the tea shop at 436 University Ave. The field journal has registered another sighting. Something powerful. Something that has always been a personal favorite.",
     confirmText:"At Mr. Sun Tea. Hydrating.",
-    arrivalText:"An Allosaurus. The apex predator of the Jurassic. Fearsome. Athletic. Surprisingly elegant for its size. The locals seem unbothered — which is either very brave or very unwise. Specimen logged.",
+    arrivalText:"An Allosaurus. The apex predator of the Jurassic. Fearsome. Athletic. Surprisingly elegant for its size. The locals seem unbothered - which is either very brave or very unwise. Specimen logged.",
     image:"allosaurus.png",
     dinoFound:true, dinoName:"Allosaurus",
     lore:{num:5, text:"A second researcher went silent attempting to observe the unknown specimen. Last known transmission: 'It just... stared at me.' Signal lost. The expedition presses on."},
     negative:false,
-    isAllosaurus:true
+    nextHints:null
   },
   {
     id:12, name:"Anomaly Detected: The Boundary",
-    clue:"Head west out of Palo Alto. Where the two cities meet, find the boundary keeper — someone sits in a white tent, employed by the city, purpose unknown. The field journal has detected unusual markings nearby. This may not be a dinosaur... but something was here.",
+    clue:"Head west out of Palo Alto. Where the two cities meet, find the boundary keeper - someone sits in a white tent, employed by the city, purpose unknown. The field journal has detected unusual markings nearby. This may not be a dinosaur... but something was here.",
     confirmText:"At the boundary.",
-    arrivalText:"No specimen here. But look down. Tracks in the ground — not train tracks. Something crossed here recently, heading toward Middle Avenue. Large. Purposeful. The field journal is picking up a signal to the north.",
+    arrivalText:"No specimen here. But look down. Tracks in the ground - not train tracks. Something crossed here recently, heading toward Middle Avenue. Large. Purposeful. The field journal is picking up a signal to the north.",
     image:"traintracks.png",
     dinoFound:false,
-    lore:null, negative:false
+    lore:null, negative:false,
+    nextHints:{
+      answer:"t-rex",
+      hints:[
+        "This carnivore had the most powerful bite ever recorded in a land animal, strong enough to crush bone.",
+        "It had a remarkably keen sense of smell and strong binocular vision, and its brain was shaped like a banana.",
+        "...The most recognizable dinosaur in history, with a brain shaped like a banana and arms that famously cannot reach its own face. The Professor knew this one all along, obviously."
+      ],
+      bonusImage:"bonus_mononykus.png",
+      bonusDino:"Mononykus"
+    }
   },
   {
     id:13, name:"Field Station Iota: The King",
     clue:"Cross into Menlo Park. Head toward Middle Avenue. Find the park with the courts. Something enormous is holding the court. It sounds fearsome. Probably.",
     confirmText:"At the courts. Trying not to laugh.",
-    arrivalText:"A T-Rex. THE T-Rex. King of the dinosaurs. Apex predator. Terror of the Cretaceous.\n\n...Its arms aren't long enough to reach the ball with the small paddle. It knows. Everyone knows. It is doing its best. The Professor will not comment on this. Specimen logged with full respect.",
+    arrivalText:"A T-Rex. THE T-Rex. King of the dinosaurs. Apex predator. Terror of the Cretaceous.
+
+Its arms aren't long enough to reach the ball with the small paddle. It knows. Everyone knows. It is doing its best. The Professor will not comment on this. Specimen logged with full respect.",
     image:"trex.png",
     dinoFound:true, dinoName:"T-Rex",
     lore:{num:6, text:"The specimen has been active all day. We believe it is aware of the expedition. It has not fled. It is waiting."},
-    negative:false
+    negative:false,
+    nextHints:{
+      answer:"spinosaurus",
+      hints:[
+        "It is believed to be semi-aquatic, spending significant time in the water and making it one of the only known swimming dinosaurs.",
+        "This dinosaur had a large sail on its back made of elongated vertebrae that could reach up to 5 feet tall.",
+        "...This dinosaur is believed to have been even larger than T-Rex, potentially reaching 50 feet in length and making it the biggest carnivore ever to walk the earth."
+      ],
+      bonusImage:"bonus_jeholopterus.png",
+      bonusDino:"Jeholopterus"
+    }
   },
   {
     id:14, name:"Field Station Kappa: The Water Dweller",
@@ -857,26 +1110,38 @@ const STOPS = [
     image:"spinosaurus.png",
     dinoFound:true, dinoName:"Spinosaurus",
     lore:{num:7, text:"Footprint confirmed near still water. The size is... unexpected. This is unlike anything in the known record. Return to base. Now."},
-    negative:false
+    negative:false,
+    nextHints:null
   },
   {
     id:15, name:"Unexpected Discovery: The Creek Lurker",
-    clue:"The field journal pulls you north. Cross back toward Sand Hill Road — but first, find the pedestrian bridge over the creek. San Francisquito. Reports have come in that something small is clinging to the railings.",
+    clue:"The field journal pulls you north. Cross back toward Sand Hill Road - but first, find the pedestrian bridge over the creek. San Francisquito. Reports have come in that something small is clinging to the railings.",
     confirmText:"On the bridge. Looking down.",
     arrivalText:"A Microraptor. Tiny. Four-winged. Absolutely feral energy for its size. It was clinging to the railing watching the creek below in terror. You help it up.",
     image:"microraptor.png",
     dinoFound:true, dinoName:"Microraptor",
-    lore:null, negative:false
+    lore:null, negative:false,
+    nextHints:null
   },
   {
     id:16, name:"Field Station Lambda: The Deep One",
     clue:"Continue north on Sand Hill Road. Base camp is within reach. But the field journal has detected something in the water at home. Something that arrived while you were away. Grab your swimsuit.",
     confirmText:"At the pool. Getting in.",
-    arrivalText:"A Mosasaurus. In the pool. Of course. Ancient marine predator. Completely at home. Specimen discovered — the hard way. Jump in, Professor. Science demands it.",
+    arrivalText:"A Mosasaurus. In the pool. Of course. Ancient marine predator. Completely at home. Specimen discovered - the hard way. Jump in, Professor. Science demands it.",
     image:"mosasaurus.png",
     dinoFound:true, dinoName:"Mosasaurus",
     lore:{num:8, text:"The trail has gone quiet. All leads exhausted. Perhaps the unknown specimen was never meant to be found. Perhaps some creatures remain a mystery. The expedition may be at its end..."},
-    negative:false
+    negative:false,
+    nextHints:{
+      answer:"mosasaurus",
+      hints:[
+        "Technically not a dinosaur, but a massive marine reptile that ruled the oceans during the late Cretaceous.",
+        "It could grow up to 50 feet long and had two sets of teeth, one in the jaw and one in the roof of its mouth.",
+        "...This creature's paddle-like limbs and powerful tail made it one of the most agile predators in the Cretaceous seas, capable of taking down nearly anything it encountered."
+      ],
+      bonusImage:"bonus_nothosaurus.png",
+      bonusDino:"Nothosaurus"
+    }
   },
   {
     id:17, name:"Final Entry: The Undiscovered Specimen",
@@ -886,7 +1151,8 @@ const STOPS = [
     image:null,
     dinoFound:false,
     lore:null, negative:false,
-    isFinal:true
+    isFinal:true,
+    nextHints:null
   }
 ];
 
@@ -975,12 +1241,10 @@ function renderCompletedBody(stop, i) {
 }
 
 function renderActiveBody(stop, i) {
-  return `
-    <div class="clue-box">${stop.clue}</div>
-    <button class="confirm-btn" id="cbtn-${i}" onclick="confirmArrival(${i})"
-      ${stop.id === 6 ? `oncontextmenu="jackLongPress(event)" ontouchstart="jackTouchStart()" ontouchend="jackTouchEnd()"` : ''}
-    >${stop.confirmText}</button>
-  `;
+  const jackAttrs = stop.id === 6 ? 'oncontextmenu="jackLongPress(event)" ontouchstart="jackTouchStart()" ontouchend="jackTouchEnd()"' : '';
+  return '<div class="clue-box">' + stop.clue + '</div>' +
+    renderGuessSection(stop, i) +
+    '<button class="confirm-btn" id="cbtn-' + i + '" onclick="confirmArrival(' + i + ')" ' + jackAttrs + ' style="margin-top:10px;">' + stop.confirmText + '</button>';
 }
 
 // ─────────────────────────────────────────────
@@ -1351,6 +1615,146 @@ function showToast(msg) {
   t.classList.add('show');
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+
+// ─────────────────────────────────────────────
+// GUESSING GAME
+// ─────────────────────────────────────────────
+function getGuessState(stopId) {
+  if (!state.guessStates) state.guessStates = {};
+  if (!state.guessStates[stopId]) {
+    state.guessStates[stopId] = { hintsShown:1, guessesLeft:4, solved:false, skipped:false };
+  }
+  return state.guessStates[stopId];
+}
+
+function renderGuessSection(stop, i) {
+  if (!stop.nextHints) return '';
+  const gs = getGuessState(i);
+  if (gs.solved) return '<div class="guess-section"><div class="guess-exhausted">Bonus specimen already secured at this location.</div></div>';
+  if (gs.skipped) return '<div class="guess-section"><div class="guess-exhausted">The Professor chose to press on. The specimen awaits.</div></div>';
+  if (gs.guessesLeft <= 0) return '<div class="guess-section"><div class="guess-exhausted">The creature remains unidentified. It will reveal itself in time.</div></div>';
+
+  const hints = stop.nextHints.hints;
+  let hintsHtml = '';
+  for (let h = 0; h < gs.hintsShown; h++) {
+    const cls = h === 2 ? 'hint-box hint-3' : 'hint-box';
+    hintsHtml += '<div class="' + cls + '">' + hints[h] + '</div>';
+  }
+
+  const canShowMore = gs.hintsShown < 3;
+  const remainingText = gs.guessesLeft === 4 ? 'Four guesses remaining.' :
+                        gs.guessesLeft === 3 ? 'Three guesses remaining.' :
+                        gs.guessesLeft === 2 ? 'Two guesses remaining.' :
+                        'One guess remaining.';
+
+  return '<div class="guess-section" id="guess-section-' + i + '">' +
+    '<div class="guess-label">What lurks at the next location?</div>' +
+    '<div class="guess-title">The field journal has intercepted a transmission...</div>' +
+    hintsHtml +
+    '<div class="guess-actions">' +
+      '<button class="hint-btn" onclick="showNextHint(' + i + ')" ' + (!canShowMore ? 'disabled' : '') + '>Another hint</button>' +
+      '<button class="skip-btn" onclick="confirmSkip(' + i + ')">Skip guessing</button>' +
+    '</div>' +
+    '<div class="guess-remaining" id="guess-remaining-' + i + '">' + remainingText + '</div>' +
+    '<div class="guess-wrong" id="guess-wrong-' + i + '" style="display:none;"></div>' +
+    '<div class="guess-input-wrap">' +
+      '<input class="guess-input" id="guess-input-' + i + '" type="text" placeholder="Name the specimen..." autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') submitGuess(' + i + ')">' +
+      '<button class="guess-submit" onclick="submitGuess(' + i + ')">Submit</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function showNextHint(i) {
+  const gs = getGuessState(i);
+  if (gs.hintsShown < 3) {
+    gs.hintsShown++;
+    save();
+    renderStops();
+    setTimeout(function() {
+      const el = document.getElementById('guess-section-' + i);
+      if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }, 100);
+  }
+}
+
+function submitGuess(i) {
+  const stop = STOPS[i];
+  const gs = getGuessState(i);
+  const input = document.getElementById('guess-input-' + i);
+  if (!input) return;
+  const val = input.value.trim().toLowerCase().replace(/[^a-z]/g,'');
+  const answer = stop.nextHints.answer.toLowerCase().replace(/[^a-z]/g,'');
+  if (!val) return;
+
+  if (val === answer) {
+    gs.solved = true;
+    save();
+    showBonusPopup(stop, i);
+  } else {
+    gs.guessesLeft--;
+    save();
+    if (gs.guessesLeft <= 0) {
+      renderStops();
+    } else {
+      const wrongEl = document.getElementById('guess-wrong-' + i);
+      const remainEl = document.getElementById('guess-remaining-' + i);
+      if (wrongEl) { wrongEl.style.display = 'block'; wrongEl.textContent = 'Not quite. Try again.'; }
+      const remainingText = gs.guessesLeft === 3 ? 'Three guesses remaining.' :
+                            gs.guessesLeft === 2 ? 'Two guesses remaining.' :
+                            'One guess remaining.';
+      if (remainEl) remainEl.textContent = remainingText;
+      input.value = '';
+      input.focus();
+    }
+  }
+}
+
+function showBonusPopup(stop, i) {
+  state.specimens = (state.specimens || 0) + 1;
+  save();
+  updateCount();
+  const box = document.getElementById('overlay-box');
+  box.className = 'overlay-box';
+  const h = stop.nextHints;
+  document.getElementById('overlay-inner').innerHTML =
+    '<img class="bonus-img" src="' + h.bonusImage + '" alt="' + h.bonusDino + '" onerror="this.outerHTML='<div class=\'overlay-img-placeholder\'>🦕</div>'">' +
+    '<div class="overlay-body">' +
+      '<div class="bonus-label">Bonus Sighting Confirmed</div>' +
+      '<div class="bonus-text">Sharp instincts, Professor. Your powers of deduction have revealed a creature that nearly escaped the record entirely.</div>' +
+      '<div class="logged-count" style="margin-bottom:12px;">' + h.bonusDino + ' logged. Specimens recorded: ' + state.specimens + '</div>' +
+      '<button class="overlay-close" onclick="closeBonusPopup(' + i + ')">Continue</button>' +
+    '</div>';
+  showOverlay();
+}
+
+function closeBonusPopup(i) {
+  closeOverlay();
+  renderStops();
+}
+
+function confirmSkip(i) {
+  const box = document.getElementById('overlay-box');
+  box.className = 'overlay-box';
+  document.getElementById('overlay-inner').innerHTML =
+    '<div class="overlay-body">' +
+      '<div class="overlay-label">Skip Guessing?</div>' +
+      '<div class="overlay-text-italic">The field journal notes that the Professor has chosen to move on without identifying the next specimen. The survey team understands. They are not disappointed. They are simply... noting it.</div>' +
+      '<div class="reset-btns" style="margin-top:12px;">' +
+        '<button class="btn-yes" onclick="doSkip(' + i + ')">Yes, skip</button>' +
+        '<button class="btn-no" onclick="closeOverlay()">Actually, I will try</button>' +
+      '</div>' +
+    '</div>';
+  showOverlay();
+}
+
+function doSkip(i) {
+  const gs = getGuessState(i);
+  gs.skipped = true;
+  save();
+  closeOverlay();
+  renderStops();
 }
 
 // ─────────────────────────────────────────────
