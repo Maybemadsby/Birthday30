@@ -646,6 +646,23 @@
     }
 
     /* ── GUESSING GAME ── */
+    .guess-toggle-btn {
+      width: 100%;
+      background: none;
+      border: 1px dashed var(--sepia-dark);
+      color: var(--green-moss);
+      padding: 9px 12px;
+      font-family: 'Special Elite', cursive;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      border-radius: 2px;
+      margin-top: 8px;
+      text-align: left;
+      transition: background 0.15s;
+    }
+    .guess-toggle-btn:hover { background: var(--paper-dark); }
+
     .guess-section {
       margin-top: 14px;
       border-top: 1px dashed var(--sepia);
@@ -1235,16 +1252,35 @@ function renderStops() {
 function renderCompletedBody(stop, i) {
   let loreBanner = '';
   if (stop.lore && !state.readNotes[stop.lore.num]) {
-    loreBanner = `<div class="fn-banner" onclick="showFieldNote(${stop.lore.num})">📓 New Field Note Discovered — tap to read</div>`;
+    loreBanner = '<div class="fn-banner" onclick="showFieldNote(' + stop.lore.num + ')">📓 New Field Note Discovered — tap to read</div>';
   }
-  return `${loreBanner}<div style="font-family:'Caveat',cursive;font-size:0.88rem;color:var(--ink-faded);padding:2px 0;">Entry complete.</div>`;
+  return loreBanner +
+    '<div style="font-family:'Caveat',cursive;font-size:0.88rem;color:var(--ink-faded);padding:2px 0 8px 0;">Entry complete.</div>';
 }
 
 function renderActiveBody(stop, i) {
   const jackAttrs = stop.id === 6 ? 'oncontextmenu="jackLongPress(event)" ontouchstart="jackTouchStart()" ontouchend="jackTouchEnd()"' : '';
+  const guessToggle = stop.nextHints
+    ? '<button class="guess-toggle-btn" onclick="toggleGuessPanel(' + i + ')">What dinosaur awaits? →</button>' +
+      '<div id="guess-panel-' + i + '" style="display:none;">' + renderGuessSection(stop, i) + '</div>'
+    : '';
   return '<div class="clue-box">' + stop.clue + '</div>' +
-    renderGuessSection(stop, i) +
-    '<button class="confirm-btn" id="cbtn-' + i + '" onclick="confirmArrival(' + i + ')" ' + jackAttrs + ' style="margin-top:10px;">' + stop.confirmText + '</button>';
+    '<button class="confirm-btn" id="cbtn-' + i + '" onclick="confirmArrival(' + i + ')" ' + jackAttrs + ' style="margin-top:10px;">' + stop.confirmText + '</button>' +
+    guessToggle;
+}
+
+function toggleGuessPanel(i) {
+  const panel = document.getElementById('guess-panel-' + i);
+  if (!panel) return;
+  const btn = panel.previousElementSibling;
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    if (btn) btn.textContent = 'Hide guess panel ↑';
+    panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  } else {
+    panel.style.display = 'none';
+    if (btn) btn.textContent = 'What dinosaur awaits? →';
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -1671,11 +1707,15 @@ function showNextHint(i) {
   if (gs.hintsShown < 3) {
     gs.hintsShown++;
     save();
-    renderStops();
-    setTimeout(function() {
-      const el = document.getElementById('guess-section-' + i);
-      if (el) el.scrollIntoView({behavior:'smooth', block:'nearest'});
-    }, 100);
+    // Re-render just the guess panel contents without full re-render
+    const panel = document.getElementById('guess-panel-' + i);
+    if (panel) {
+      const stop = STOPS[i];
+      panel.innerHTML = renderGuessSection(stop, i);
+      setTimeout(function() {
+        panel.scrollIntoView({behavior:'smooth', block:'nearest'});
+      }, 100);
+    }
   }
 }
 
@@ -1696,7 +1736,9 @@ function submitGuess(i) {
     gs.guessesLeft--;
     save();
     if (gs.guessesLeft <= 0) {
-      renderStops();
+      // Re-render just the panel
+      const panel = document.getElementById('guess-panel-' + i);
+      if (panel) panel.innerHTML = renderGuessSection(stop, i);
     } else {
       const wrongEl = document.getElementById('guess-wrong-' + i);
       const remainEl = document.getElementById('guess-remaining-' + i);
