@@ -991,9 +991,7 @@ const STOPS = [
     id:6, name:"Field Station Epsilon: A Promising Lead",
     clue:"Exit campus heading west. You will find a food establishment that the Professor has long eyed with curiosity, and long been denied. A clue waits there. Do not eat anything.",
     confirmText:"I have arrived at... oh.",
-    arrivalText:"No specimen found. Only a faint smell and a flickering drive-thru menu. The field journal has registered this location as: NEGATIVE. Science is sometimes cruel, Professor. Move on.
-
-(You were never going to eat here anyway.)",
+    arrivalText:"No specimen found. Only a faint smell and a flickering drive-thru menu. The field journal has registered this location as: NEGATIVE. Science is sometimes cruel, Professor. Move on.<br><br>(You were never going to eat here anyway.)",
     image:"jackinbox.png",
     dinoFound:false,
     lore:null, negative:true,
@@ -1101,9 +1099,7 @@ const STOPS = [
     id:13, name:"Field Station Iota: The King",
     clue:"Cross into Menlo Park. Head toward Middle Avenue. Find the park with the courts. Something enormous is holding the court. It sounds fearsome. Probably.",
     confirmText:"At the courts. Trying not to laugh.",
-    arrivalText:"A T-Rex. THE T-Rex. King of the dinosaurs. Apex predator. Terror of the Cretaceous.
-
-Its arms aren't long enough to reach the ball with the small paddle. It knows. Everyone knows. It is doing its best. The Professor will not comment on this. Specimen logged with full respect.",
+    arrivalText:"A T-Rex. THE T-Rex. King of the dinosaurs. Apex predator. Terror of the Cretaceous.<br><br>Its arms aren't long enough to reach the ball with the small paddle. It knows. Everyone knows. It is doing its best. The Professor will not comment on this. Specimen logged with full respect.",
     image:"trex.png",
     dinoFound:true, dinoName:"T-Rex",
     lore:{num:6, text:"The specimen has been active all day. We believe it is aware of the expedition. It has not fled. It is waiting."},
@@ -1255,7 +1251,7 @@ function renderCompletedBody(stop, i) {
     loreBanner = '<div class="fn-banner" onclick="showFieldNote(' + stop.lore.num + ')">📓 New Field Note Discovered — tap to read</div>';
   }
   return loreBanner +
-    '<div style="font-family:'Caveat',cursive;font-size:0.88rem;color:var(--ink-faded);padding:2px 0 8px 0;">Entry complete.</div>';
+    '<div style="font-family:Caveat,cursive;font-size:0.88rem;color:var(--ink-faded);padding:2px 0 8px 0;">Entry complete.</div>';
 }
 
 function renderActiveBody(stop, i) {
@@ -1265,8 +1261,8 @@ function renderActiveBody(stop, i) {
       '<div id="guess-panel-' + i + '" style="display:none;">' + renderGuessSection(stop, i) + '</div>'
     : '';
   return '<div class="clue-box">' + stop.clue + '</div>' +
-    '<button class="confirm-btn" id="cbtn-' + i + '" onclick="confirmArrival(' + i + ')" ' + jackAttrs + ' style="margin-top:10px;">' + stop.confirmText + '</button>' +
-    guessToggle;
+    guessToggle +
+    '<button class="confirm-btn" id="cbtn-' + i + '" onclick="confirmArrival(' + i + ')" ' + jackAttrs + ' style="margin-top:10px;">' + stop.confirmText + '</button>';
 }
 
 function toggleGuessPanel(i) {
@@ -1696,7 +1692,7 @@ function renderGuessSection(stop, i) {
     '<div class="guess-remaining" id="guess-remaining-' + i + '">' + remainingText + '</div>' +
     '<div class="guess-wrong" id="guess-wrong-' + i + '" style="display:none;"></div>' +
     '<div class="guess-input-wrap">' +
-      '<input class="guess-input" id="guess-input-' + i + '" type="text" placeholder="Name the specimen..." autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key==='Enter') submitGuess(' + i + ')">' +
+      '<input class="guess-input" id="guess-input-' + i + '" type="text" placeholder="Name the specimen..." autocomplete="off" autocorrect="off" spellcheck="false" onkeydown="if(event.key===\'Enter\') submitGuess(' + i + ')">' +
       '<button class="guess-submit" onclick="submitGuess(' + i + ')">Submit</button>' +
     '</div>' +
   '</div>';
@@ -1760,14 +1756,22 @@ function showBonusPopup(stop, i) {
   const box = document.getElementById('overlay-box');
   box.className = 'overlay-box';
   const h = stop.nextHints;
-  document.getElementById('overlay-inner').innerHTML =
-    '<img class="bonus-img" src="' + h.bonusImage + '" alt="' + h.bonusDino + '" onerror="this.outerHTML='<div class=\'overlay-img-placeholder\'>🦕</div>'">' +
-    '<div class="overlay-body">' +
-      '<div class="bonus-label">Bonus Sighting Confirmed</div>' +
-      '<div class="bonus-text">Sharp instincts, Professor. Your powers of deduction have revealed a creature that nearly escaped the record entirely.</div>' +
-      '<div class="logged-count" style="margin-bottom:12px;">' + h.bonusDino + ' logged. Specimens recorded: ' + state.specimens + '</div>' +
-      '<button class="overlay-close" onclick="closeBonusPopup(' + i + ')">Continue</button>' +
-    '</div>';
+  const inner = document.getElementById('overlay-inner');
+  const img = document.createElement('img');
+  img.className = 'bonus-img';
+  img.src = h.bonusImage;
+  img.alt = h.bonusDino;
+  img.onerror = function() { this.style.display = 'none'; };
+  const body = document.createElement('div');
+  body.className = 'overlay-body';
+  body.innerHTML =
+    '<div class="bonus-label">Bonus Sighting Confirmed</div>' +
+    '<div class="bonus-text">Sharp instincts, Professor. Your powers of deduction have revealed a creature that nearly escaped the record entirely.</div>' +
+    '<div class="logged-count" style="margin-bottom:12px;">' + h.bonusDino + ' logged. Specimens recorded: ' + state.specimens + '</div>' +
+    '<button class="overlay-close" onclick="closeBonusPopup(' + i + ')">Continue</button>';
+  inner.innerHTML = '';
+  inner.appendChild(img);
+  inner.appendChild(body);
   showOverlay();
 }
 
